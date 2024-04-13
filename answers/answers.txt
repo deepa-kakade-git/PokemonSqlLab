@@ -1,0 +1,44 @@
+//Part 2: Simple Selects and Counts
+//What are all the types of pokemon that a pokemon can have?
+select count(*) from types;
+
+//What is the name of the pokemon with id 45?
+select name from pokemons where id = 45;
+
+//How many pokemon are there?
+select count(*) from pokemons;
+
+//How many types are there?
+select count(distict primary_type) from pokemons;
+
+//How many pokemon have a secondary type?
+select count(*) from pokemons where secoondary_type is not null;
+
+//Part 3: Joins and Groups
+//Directions: Write a sql query or sql queries that can answer the following questions
+
+//What is each pokemon's primary type?
+select a.id , a.name , b.name as pokemon_primary_type from pokemons a , types b where a.primary_type = b.id ;
+
+//What is Rufflet's secondary type?
+select a.id , a.name , a.secondary_type , b.name from pokemons a , types b where a.secondary_type = b.id and a.name='Rufflet';
+
+//What are the names of the pokemon that belong to the trainer with trainerID 303?
+select a.name as pokemon_name , t.trainerID from pokemons a, pokemon_trainer t where t.pokemon_id = a.id and trainerID= 303;
+
+//How many pokemon have a secondary type Poison
+select distinct p.id from pokemons p , types t where p.secondary_type=t.id and t.name = 'Poison';
+
+
+//What are all the primary types and how many pokemon have that type?
+select types.name, count(pokemons.id) from types , pokemons where types.id = pokemons.primary_type group by types.name;
+
+
+//How many pokemon at level 100 does each trainer with at least one level 100 pokemone have? (Hint: your query should not display a trainer
+select count(distinct pokemon_id) from pokemon_trainer where pokelevel >=100;
+//or
+select count(distinct pokemon_id) from pokemon_trainer where trainerid in (select trainerid from pokemon_trainer where pokelevel >= 100) and pokelevel >=100;
+
+
+//How many pokemon only belong to one trainer and no other?
+select count(*) from (select pokemon_id,count(*) ctrainer from  pokemon_trainer group by pokemon_id) a where a.ctrainer=1;
